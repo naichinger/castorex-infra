@@ -1,0 +1,8 @@
+compartment_ocid = ""
+user_ocid = ""
+fingerprint = ""
+private_key_path = ""
+region = ""
+ssh_public_key_path = ""
+availability_domain_number=1
+worker_node_count = 2 # changing this value will incur cost
