@@ -1,0 +1,18 @@
+compartment_ocid = ""
+user_ocid = ""
+fingerprint = ""
+private_key_path = "./oci_private_key.pem"
+region = "eu-frankfurt-1"
+ssh_public_key_path = "../ssh_key.pub"
+availability_domain_number=1
+worker_node_count = 2
+
+#ARM CONFIG
+instances_shape = "VM.Standard.A1.Flex"
+instances_image = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaa6odzhcjyusigce7aenknxyk3fw44xcsmmqqc7a4hrmyvnhgbll7q"
+control_plane_ocpu_count = 2
+control_plane_memory_gb = 12
+worker_ocpu_count = 1
+worker_memory_gb = 6
+availability_domain_number=3
+worker_node_count = 2

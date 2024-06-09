@@ -1,5 +1,5 @@
-resource "oci_core_virtual_network" "castorex_vcn" {
-  cidr_blocks     = ["10.0.0.0/16"]
+resource "oci_core_vcn" "castorex_vcn" {
+  cidr_block = "10.0.0.0/16"
   compartment_id = var.compartment_ocid
   dns_label      = "castorexvcn"
 }
@@ -9,21 +9,19 @@ resource "oci_core_subnet" "castorex_subnet" {
   display_name      = "Castorex Infra Subnet"
   dns_label         = "castorexsubnet"
   compartment_id    = var.compartment_ocid
-  vcn_id            = oci_core_virtual_network.castorex_vcn.id
+  vcn_id            = oci_core_vcn.castorex_vcn.id
   security_list_ids = [oci_core_security_list.castorex_security_list.id]
-  route_table_id    = oci_core_route_table.castorex_route_table.id
-  dhcp_options_id   = oci_core_virtual_network.castorex_vcn.default_dhcp_options_id
+  route_table_id    = oci_core_vcn.castorex_vcn.default_route_table_id
+  dhcp_options_id   = oci_core_vcn.castorex_vcn.default_dhcp_options_id
 }
 
 resource "oci_core_internet_gateway" "castorex_internet_gateway" {
   compartment_id = var.compartment_ocid
-  vcn_id         = oci_core_virtual_network.castorex_vcn.id
+  vcn_id         = oci_core_vcn.castorex_vcn.id
 }
 
-resource "oci_core_route_table" "castorex_route_table" {
-  compartment_id = var.compartment_ocid
-  vcn_id         = oci_core_virtual_network.castorex_vcn.id
-
+resource "oci_core_default_route_table" "castorex_route_table" {
+  manage_default_resource_id = oci_core_vcn.castorex_vcn.default_route_table_id
   route_rules {
     destination       = "0.0.0.0/0"
     destination_type  = "CIDR_BLOCK"
@@ -33,16 +31,23 @@ resource "oci_core_route_table" "castorex_route_table" {
 
 resource "oci_core_security_list" "castorex_security_list" {
   compartment_id = var.compartment_ocid
-  vcn_id         = oci_core_virtual_network.castorex_vcn.id
+  vcn_id         = oci_core_vcn.castorex_vcn.id
 
   egress_security_rules {
     protocol    = "all"
     destination = "0.0.0.0/0"
-    stateless   = true
+    stateless   = false
+  }
+
+  ingress_security_rules {
+    protocol    = "all"
+    source = "10.0.0.0/16"
+    stateless   = false
+    description = "Allow all traffic within subnet"
   }
 
   dynamic "ingress_security_rules" {
-    for_each = [22, 80, 443]
+    for_each = [22, 80, 443, 6443]
     iterator = port
     content {
         protocol    = "6" # TCP

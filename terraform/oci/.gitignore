@@ -1,5 +1,3 @@
-ssh_key
-ssh_key.pub
 terraform.tfstate
 terraform.tfstate.backup
 terraform.tfvars
