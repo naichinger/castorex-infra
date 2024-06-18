@@ -21,3 +21,11 @@ variable "instances_shape" {
 variable "instances_image" {
   type = string
 }
+
+variable "cf_domain" {
+  type = string
+}
+
+variable "cf_token" {
+  type = string
+}

@@ -7,8 +7,8 @@ k3s_cluster:
     ansible_python_interpreter: /usr/bin/python3
     k3s_registration_address: ${ server_hosts[0].network.*.ip[0] }
     k3s_become: true
-    k3s_server:
-      tls-san: "{{ ansible_host }}"
+#   k3s_server:
+#     tls-san: "{{ ansible_host }}"
 
   hosts:
 %{ for index, host in server_hosts ~}

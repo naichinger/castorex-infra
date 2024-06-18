@@ -1,7 +1,13 @@
+# hetzner config
 hcloud_token = ""
 ssh_public_key_path = "../ssh_key.pub"
 
+#cluster shape
 instances_shape = "cx22"
 instances_image = "ubuntu-22.04"
 worker_node_count = 1
 region = "fsn1"
+
+#cloudflare config
+cf_token = ""
+cf_domain = "example.com"
