@@ -9,3 +9,36 @@ resource "hcloud_network_subnet" "castorex_subnet" {
   network_zone = "eu-central"
   ip_range     = "10.0.0.0/24"
 }
+
+resource "hcloud_firewall" "castorex_firewall" {
+  name = "castorex-firewall"
+  rule {
+    direction = "in"
+    protocol  = "tcp"
+    port = "22"
+    source_ips = [
+      "0.0.0.0/0",
+      "::/0"
+    ]
+  }
+
+  rule {
+    direction = "in"
+    protocol  = "tcp"
+    port      = "80"
+    source_ips = [
+      "0.0.0.0/0",
+      "::/0"
+    ]
+  }
+
+  rule {
+    direction = "in"
+    protocol  = "tcp"
+    port      = "443"
+    source_ips = [
+      "0.0.0.0/0",
+      "::/0"
+    ]
+  }
+}

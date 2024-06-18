@@ -9,6 +9,8 @@ resource "hcloud_server" "castorex_control_plane" {
   server_type = var.instances_shape
   location    = var.region
 
+  firewall_ids = [hcloud_firewall.castorex_firewall.id]
+
   ssh_keys = [ hcloud_ssh_key.instances_ssh_key.id ]
 
   public_net {
@@ -28,6 +30,8 @@ resource "hcloud_server" "castorex_worker_nodes" {
   server_type = var.instances_shape
   location    = var.region
 
+  firewall_ids = [hcloud_firewall.castorex_firewall.id]
+  
   ssh_keys = [ hcloud_ssh_key.instances_ssh_key.id ]
 
   public_net {
