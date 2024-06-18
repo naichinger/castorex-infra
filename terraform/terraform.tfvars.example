@@ -1,6 +1,6 @@
 # hetzner config
 hcloud_token = ""
-ssh_public_key_path = "../ssh_key.pub"
+ssh_public_key_path = "ssh_key.pub"
 
 #cluster shape
 instances_shape = "cx22"

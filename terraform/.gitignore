@@ -1,2 +1,12 @@
+terraform.tfstate
+terraform.tfstate.backup
+terraform.tfvars
+oci_private_key.pem
+.terraform.lock.hcl
+
+.terraform/
+
+.DS_Store
+
 ssh_key
 ssh_key.pub

@@ -26,5 +26,5 @@ resource "local_file" "ansible_inventory" {
       agent_hosts = hcloud_server.castorex_worker_nodes.*
     }
   )
-  filename = "../../ansible/inventory/inventory.yml"
+  filename = "../ansible/inventory/inventory.yml"
 }
