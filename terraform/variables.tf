@@ -29,3 +29,15 @@ variable "cf_domain" {
 variable "cf_token" {
   type = string
 }
+
+variable "cf_account_id" {
+  type = string
+}
+
+variable "argocd_pw" {
+  type = string
+}
+
+variable "letsencrypt_email" {
+  type = string
+}

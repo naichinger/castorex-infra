@@ -11,3 +11,6 @@ region = "fsn1"
 #cloudflare config
 cf_token = ""
 cf_domain = "example.com"
+
+argocd_pw = ""
+letsencrypt_email = ""

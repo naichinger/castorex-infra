@@ -24,6 +24,10 @@ resource "local_file" "ansible_inventory" {
     {
       server_hosts = hcloud_server.castorex_control_plane.*
       agent_hosts = hcloud_server.castorex_worker_nodes.*
+      cloudflare_tunnel_secret = cloudflare_tunnel.castorex_cf_tunnel.tunnel_token
+      cloudflare_token = var.cf_token
+      letsencrypt_email = var.letsencrypt_email
+      argocd_pw = bcrypt(var.argocd_pw)
     }
   )
   filename = "../ansible/inventory/inventory.yml"

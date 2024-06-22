@@ -1,0 +1,59 @@
+- name: Deploy certmanager Block
+  when:
+    - ((k3s_control_node and k3s_controller_list | length == 1)
+      or (k3s_primary_control_node and k3s_controller_list | length > 1))
+  block:
+    - name: Create cert-manager directory on primary control node
+      ansible.builtin.file:
+        path: /tmp/certmanager
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0644"
+
+    - name: Copy clusterissuer to primary control node
+      ansible.builtin.template:
+        src: "letsencrypt.yml.j2"
+        dest: /tmp/certmanager/letsencrypt.yml
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0644"
+
+    - name: Copy cloudflare token secret to primary control node
+      ansible.builtin.template:
+        src: "cf_token_secret.yml.j2"
+        dest: /tmp/certmanager/cf_token_secret.yml
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0644"
+
+    - name: Add cert-manager helm repo
+      kubernetes.core.helm_repository:
+        name: jetstack
+        repo_url: https://charts.jetstack.io
+        force_update: true
+
+    - name: Deploy cert-manager with helm
+      kubernetes.core.helm:
+        name: cert-manager
+        chart_ref: jetstack/cert-manager
+        release_namespace: cert-manager
+        create_namespace: true
+        chart_version: v1.15.0
+        values:
+          crds:
+            enabled: true
+        wait: true
+        release_state: present
+
+    - name: Apply cert-manager cloudflare secret
+      kubernetes.core.k8s:
+        state: present
+        src: /tmp/certmanager/cf_token_secret.yml
+        namespace: cert-manager
+
+    - name: Apply cert-manager cluster issuer letsencrypt
+      kubernetes.core.k8s:
+        state: present
+        src: /tmp/certmanager/letsencrypt.yml
+        namespace: cert-manager

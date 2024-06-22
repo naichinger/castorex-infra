@@ -1,0 +1,26 @@
+- name: Deploy traefik dashboard Block
+  when:
+    - ((k3s_control_node and k3s_controller_list | length == 1)
+      or (k3s_primary_control_node and k3s_controller_list | length > 1))
+  block:
+    - name: Ensure manifest folder exists on primary control node
+      ansible.builtin.file:
+        path: /etc/rancher/k3s/server/manifests
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0644"
+
+    - name: Copy traefik helm chart config to primary control node
+      ansible.builtin.template:
+        src: "traefik-chart-config.yml.j2"
+        dest: /etc/rancher/k3s/server/manifests/traefik-chart-config.yml
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0644"
+
+    - name: Apply traefik cloudflare secret
+      kubernetes.core.k8s:
+        state: present
+        src: /etc/rancher/k3s/server/manifests/traefik-chart-config.yml
+        namespace: kube-system

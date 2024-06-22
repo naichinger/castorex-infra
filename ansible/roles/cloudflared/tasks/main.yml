@@ -1,0 +1,33 @@
+- name: Deploy cloudflared Block
+  when:
+    - ((k3s_control_node and k3s_controller_list | length == 1)
+      or (k3s_primary_control_node and k3s_controller_list | length > 1))
+  block:
+    - name: Create cloudflared directory on primary control node
+      ansible.builtin.file:
+        path: /tmp/cloudflared
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0644"
+
+    - name: Copy cloudflared to primary control node
+      ansible.builtin.template:
+        src: "cloudflared.yml.j2"
+        dest: /tmp/cloudflared/cloudflared.yml
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0644"
+
+    - name: Create a cloudflared namespace
+      kubernetes.core.k8s:
+        name: cloudflared
+        api_version: v1
+        kind: Namespace
+        state: present
+
+    - name: Apply cloudflared
+      kubernetes.core.k8s:
+        state: present
+        src: /tmp/cloudflared/cloudflared.yml
+        namespace: cloudflared

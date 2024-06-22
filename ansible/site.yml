@@ -4,3 +4,70 @@
   hosts: k3s_cluster
   roles:
     - role: xanmanning.k3s
+
+- name: Prerequisites for playbook
+  hosts: k3s_cluster
+  tasks:
+    - name: Ensure kubeconfig is in .kube folder
+      ansible.builtin.copy:
+        remote_src: true
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: ~/.kube/config
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0644"
+      changed_when: true
+      when:
+        - k3s_control_node
+
+    - name: Ensure pip3 is install
+      ansible.builtin.apt:
+        name: python3-pip
+        state: present
+        update_cache: true
+      when:
+        - k3s_control_node
+
+    - name: Ensure python3 dependencies are installed for kubernetes.core module
+      ansible.builtin.pip:
+        name:
+          - openshift
+          - pyyaml
+          - kubernetes
+      when:
+        - k3s_control_node
+
+- name: Install Helm
+  hosts: k3s_cluster
+  vars:
+    helm_role_path: roles/helm
+  roles:
+    - role: "{{ helm_role_path }}"
+
+- name: Install Certmanager
+  hosts: k3s_cluster
+  vars:
+    certmanager_role_path: roles/certmanager
+  roles:
+    - role: "{{ certmanager_role_path }}"
+
+- name: Install cloudflared
+  hosts: k3s_cluster
+  vars:
+    cloudflared_role_path: roles/cloudflared
+  roles:
+    - role: "{{ cloudflared_role_path }}"
+
+- name: Install argocd
+  hosts: k3s_cluster
+  vars:
+    argocd_role_path: roles/argocd
+  roles:
+    - role: "{{ argocd_role_path }}"
+
+- name: Install traefik dashboard
+  hosts: k3s_cluster
+  vars:
+    traefik_dashboard_role_path: roles/traefik-dashboard
+  roles:
+    - role: "{{ traefik_dashboard_role_path }}"
