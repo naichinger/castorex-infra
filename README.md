@@ -17,6 +17,8 @@ Terraform creates the following resources:
 - Cloudflare Tunnel
     - This Tunnel has access to the k3s internal service subnet and can access all services in the cluster.
 
+Terraform also generates a ansible inventory file which is then used by ansible to deploy the k3s cluster with its default resources.
+
 ![img](docs/network.png)
 
 # Create Cluster with Ansible
