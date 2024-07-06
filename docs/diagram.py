@@ -7,19 +7,19 @@ with Diagram("Terraform Architecture Diagram",filename="network", show=False):
     with Cluster("Hetzner Infrastructure"):
         with Cluster("Castorex Network 10.0.0.0/16"):
             with Cluster("Castorex Sub Network 10.0.0.0/24"):
+                workerNVps = Server("nth. Worker Node")
                 worker1Vps = Server("1. Worker Node")
                 masterVps = Server("Master Node")
-                workerNVps = Server("nth. Worker Node")
 
         fw = Firewall("Hetzner Firewall")
     with Cluster("Cloudflare Infrastructure"):
         dnsRecord = Cloudflare("DNS Record")
         tunnel = Cloudflare("Cloudflare Tunnel")
 
-    tunnel >> Edge(label="Accesses K3s internal service subnet ") >> masterVps
+    tunnel >> Edge(label="Accesses K3s internal service subnet ") >> worker1Vps
 
     dnsRecord >> fw
-    fw >> workerNVps
+    fw >> masterVps
     
 '''    
     dns = Route53("dns")

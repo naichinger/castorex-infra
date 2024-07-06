@@ -10,7 +10,9 @@ region = "fsn1"
 
 #cloudflare config
 cf_token = ""
+cf_account_id = ""
 cf_domain = "example.com"
 
+#config
 argocd_pw = ""
 letsencrypt_email = ""
